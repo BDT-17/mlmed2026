@@ -1,22 +1,108 @@
 \documentclass[conference]{IEEEtran}
 
-\title{This is your report}
+\title{ECG Heartbeat Classification using PyTorch}
+
+\author{
+    Bui Duc Thang -- 23BI14400 \\
+    Department of ICT \\
+   
+}
 
 \begin{document}
 
 \maketitle
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+\begin{abstract}
+This report presents the implementation of a deep learning model for ECG heartbeat 
+classification using the MIT-BIH Arrhythmia dataset. A feed-forward neural network 
+was trained on ECG beat segments to classify heartbeats into five categories. 
+Performance was evaluated using accuracy and macro F1-score, demonstrating strong 
+generalization and steady improvement across epochs.
+\end{abstract}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+\section{Introduction}
+Electrocardiogram (ECG) signals are widely used for diagnosing cardiac conditions. 
+Automated classification of ECG beats can assist clinicians by reducing manual workload 
+and improving diagnostic accuracy. In this project, we implement a PyTorch-based 
+feed-forward neural network to classify ECG beats into five categories.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+\section{Dataset}
+The dataset used is the MIT-BIH Arrhythmia dataset, provided in CSV format:
+\begin{itemize}
+    \item \textbf{Training set:} \texttt{mitbih\_train.csv}
+    \item \textbf{Test set:} \texttt{mitbih\_test.csv}
+\end{itemize}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Each row corresponds to one ECG beat segment of length 187 samples, followed by a label 
+indicating the heartbeat class (0–4). The dataset contains five heartbeat categories:
+Normal, Supraventricular, Ventricular, Fusion, and Unknown.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+\section{Model Implementation}
+We implemented a feed-forward neural network in PyTorch:
+\begin{itemize}
+    \item Input dimension: 187
+    \item Hidden layers: Two fully connected layers with GELU activation
+    \item Output: 5-class logits
+\end{itemize}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+The model is trained using the Adam optimizer and cross-entropy loss.
 
+\section{Training Procedure}
+\begin{itemize}
+    \item Batch size: 64
+    \item Epochs: 10
+    \item Learning rate: $1 \times 10^{-4}$
+    \item Device: CPU
+\end{itemize}
+
+The training loop computes average training loss per epoch. Validation is performed 
+after each epoch, with accuracy and macro F1-score reported.
+
+\section{Results}
+Table~\ref{tab:training} shows the training progress over 10 epochs, including 
+training loss, validation accuracy, and validation F1-score.
+
+\begin{table}[h]
+\centering
+\caption{Training Progress over 10 Epochs}
+\label{tab:training}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Epoch} & \textbf{Train Loss} & \textbf{Val Acc} & \textbf{Val F1} \\
+\hline
+01 & 0.4730 & 0.9081 & 0.4611 \\
+02 & 0.2896 & 0.9294 & 0.5554 \\
+03 & 0.2361 & 0.9430 & 0.7021 \\
+04 & 0.2079 & 0.9453 & 0.7132 \\
+05 & 0.1900 & 0.9488 & 0.7255 \\
+06 & 0.1775 & 0.9524 & 0.7519 \\
+07 & 0.1680 & 0.9551 & 0.7781 \\
+08 & 0.1623 & 0.9555 & 0.7649 \\
+09 & 0.1557 & 0.9578 & 0.7865 \\
+10 & 0.1499 & 0.9592 & 0.7945 \\
+\hline
+\end{tabular}
+\end{table}
+
+The model demonstrates steady improvement, with validation accuracy reaching 
+95.9\% and macro F1-score approaching 0.79 by epoch 10.
+
+\section{Repository Workflow}
+The following files were pushed to the forked GitHub repository:
+\begin{itemize}
+    \item \texttt{Report.1.tex} (this report)
+    
+    \item \texttt{practice1.py} 
+\end{itemize}
+
+
+
+\section{Conclusion}
+This project demonstrates ECG heartbeat classification using a simple feed-forward 
+network. Future work includes experimenting with convolutional architectures, 
+transfer learning, and per-class evaluation metrics to further improve performance.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+https://www.kaggle.com/datasets/shayanfazeli/heartbeat/data
 \end{document}
