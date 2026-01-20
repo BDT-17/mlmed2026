@@ -1,6 +1,7 @@
 USTH Machine Learning in Medicine 2026
 ==================================
 
-* Your name here
-* Your ID here
-* Your team ID here
+* Bui Duc Thang  
+* 23BI14400
+* Team 6
+  
