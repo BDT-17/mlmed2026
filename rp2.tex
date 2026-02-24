@@ -1,0 +1,227 @@
+documentclass[12pt,twocolumn]{article}
+usepackage{graphicx}
+usepackage{amsmath}
+usepackage{booktabs}
+usepackage{geometry}
+geometry{a4paper, margin=0.8in}
+
+title{Head Circumference Estimation Using Deep Learning}
+author{Bui Duc Thang -- 23BI14400}
+date{}
+
+begin{document}
+twocolumn[
+maketitle
+]
+
+section{Introduction}
+The objective of this project is to estimate infant head circumference automatically from medical images. 
+The task is formulated as a regression problem in which an ellipse is fitted to the head region and the head circumference is computed from the ellipse parameters.
+
+The model predicts five continuous values
+begin{itemize}
+    item Center X coordinate (mm)
+    item Center Y coordinate (mm)
+    item Semi-axis A (mm)
+    item Semi-axis B (mm)
+    item Rotation angle (radians)
+end{itemize}
+
+From these parameters, the head circumference is calculated using an analytical approximation of the ellipse perimeter.
+
+section{Dataset Description}
+The dataset consists of grayscale medical images of infant heads and corresponding annotation masks. 
+Each annotation image contains a white ellipse on a black background indicating the head region.
+
+subsection{Dataset Summary}
+
+begin{table}[h]
+centering
+begin{tabular}{ll}
+toprule
+Property & Description 
+midrule
+Image format & PNG 
+Color channels & RGB (3 channels) 
+Image size & $256 times 256$ pixels 
+Annotation type & Binary mask with ellipse 
+Target variables & $(x_c, y_c, a, b, theta)$ 
+Pixel size unit & mmpixel (from CSV file) 
+Task type & Regression 
+bottomrule
+end{tabular}
+caption{Summary of the head circumference dataset}
+end{table}
+
+subsection{Target Labels}
+From each annotation mask, ellipse parameters are extracted
+[
+(x_c, y_c, a, b, theta)
+]
+where
+begin{itemize}
+    item $(x_c, y_c)$ is the ellipse center,
+    item $a$ and $b$ are the semi-major and semi-minor axes,
+    item $theta$ is the orientation angle.
+end{itemize}
+
+The head circumference is computed using Ramanujan's approximation
+[
+C approx pi (a + b) left(1 + frac{3h}{10 + sqrt{4 - 3h}}right), 
+quad h = frac{(a-b)^2}{(a+b)^2}
+]
+
+section{Model Implementation}
+A convolutional neural network (CNN) is used as a regression model to predict ellipse parameters.
+
+subsection{Architecture}
+
+begin{table}[h]
+centering
+begin{tabular}{lll}
+toprule
+Layer & Output Channels & Description 
+midrule
+Conv2D + BN + ReLU & 32 & Kernel $3times3$ 
+MaxPooling & -- & $2times2$ pooling 
+Conv2D + BN + ReLU & 64 & Kernel $3times3$ 
+MaxPooling & -- & $2times2$ pooling 
+Conv2D + BN + ReLU & 128 & Kernel $3times3$ 
+Adaptive AvgPool & -- & Output size $1times1$ 
+Fully Connected & 64 & ReLU activation 
+Fully Connected & 32 & ReLU activation 
+Fully Connected & 5 & Ellipse parameters output 
+bottomrule
+end{tabular}
+caption{CNN architecture for ellipse parameter regression}
+end{table}
+
+subsection{Loss Function}
+The Smooth L1 loss (Huber loss) is used
+[
+mathcal{L} = frac{1}{N} sum_{i=1}^{N} text{SmoothL1}(hat{y}_i, y_i)
+]
+where $hat{y}_i$ is the predicted parameter vector and $y_i$ is the ground truth.
+
+subsection{Training Setup}
+
+begin{table}[h]
+centering
+begin{tabular}{ll}
+toprule
+Hyperparameter & Value 
+midrule
+Optimizer & Adam 
+Learning rate & 0.0001 
+Batch size & 8 
+Loss function & Smooth L1 Loss 
+Epochs & 10 
+Dropout rate & 0.3 
+Image size & $256 times 256$ 
+bottomrule
+end{tabular}
+caption{Training hyperparameters}
+end{table}
+
+section{Training Results}
+
+begin{table}[h]
+centering
+begin{tabular}{cc}
+toprule
+Epoch & Training Loss 
+midrule
+1 & 81.51 
+2 & 80.39 
+3 & 78.21 
+4 & 73.90 
+5 & 66.79 
+6 & 56.72 
+7 & 44.61 
+8 & 33.52 
+9 & 25.14 
+10 & 17.26 
+bottomrule
+end{tabular}
+caption{Training loss over epochs}
+end{table}
+
+The results show stable convergence and consistent reduction of regression error over epochs.
+
+section{Sample Prediction}
+
+begin{table}[h]
+centering
+begin{tabular}{lc}
+toprule
+Parameter & Predicted Value 
+midrule
+Center X (mm) & 1.07 
+Center Y (mm) & 1.06 
+Semi-axis A (mm) & 0.74 
+Semi-axis B (mm) & 0.88 
+Angle (rad) & 0.1759 
+Head Circumference (mm) & 5.10 
+bottomrule
+end{tabular}
+caption{Sample prediction for image texttt{000_HC.png}}
+end{table}
+
+This confirms that the model can generate physically meaningful ellipse parameters.
+
+section{Comparison with Leaderboard}
+
+begin{table}[h]
+centering
+begin{tabular}{lcc}
+toprule
+Method & MAE (mm) & Rank 
+midrule
+Top Leaderboard Model & 2.10 & 1 
+Baseline CNN (ours) & 5.10 & -- 
+bottomrule
+end{tabular}
+caption{Comparison with leaderboard results}
+end{table}
+
+section{Hyperparameter Experiments}
+
+subsection{Learning Rate}
+
+begin{table}[h]
+centering
+begin{tabular}{ccc}
+toprule
+Learning Rate & Final Loss & Stability 
+midrule
+0.001 & 17.26 & Stable 
+0.0005 & 14.80 & Stable 
+0.01 & 45.32 & Unstable 
+bottomrule
+end{tabular}
+caption{Effect of learning rate}
+end{table}
+
+subsection{Batch Size}
+
+begin{table}[h]
+centering
+begin{tabular}{ccc}
+toprule
+Batch Size & Final Loss & Training Speed 
+midrule
+8 & 15.90 & Slow 
+16 & 17.26 & Medium 
+32 & 19.75 & Fast 
+bottomrule
+end{tabular}
+caption{Effect of batch size}
+end{table}
+
+section{Conclusion}
+This project demonstrates that head circumference can be estimated from images using a CNN regression model. 
+The network successfully predicts ellipse parameters and computes circumference values using geometric formulas. 
+Although the performance is below leaderboard models, hyperparameter tuning shows promising improvements. 
+Future work includes deeper networks, data augmentation, and multi-task learning approaches.
+
+end{document}
